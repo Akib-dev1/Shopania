@@ -73,7 +73,7 @@ const Navbar = () => {
       <div className="navbar-end">
         <Link
           href="/login"
-          className="btn btn-success text-white px-6 hover:bg-green-600 transition-colors duration-300"
+          className="btn btn-success rounded-lg text-lg hover:bg-inherit text-white px-6 hover:text-black transition-colors duration-250"
         >
           Login
         </Link>
