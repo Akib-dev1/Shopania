@@ -1,10 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
 
+export const dynamic = "force-dynamic";
+
 export default async function Page({ params }) {
-  const res = await fetch("http://localhost:3000/product", {
-    cache: "force-cache",
-  });
+  const res = await fetch("https://shopania.vercel.app/product");
   const products = await res.json();
   const { id } = await params;
   const product = products.find((p) => p._id === id);

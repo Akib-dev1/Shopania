@@ -1,10 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
 
+export const dynamic = "force-dynamic";
+
 export default async function Home() {
-  const res = await fetch("http://localhost:3000/product", {
-    cache: "force-cache",
-  });
+  const res = await fetch("https://shopania.vercel.app/product");
   const product = await res.json();
   const products = product.slice(0, 6);
   return (
@@ -128,16 +128,6 @@ export default async function Home() {
                 </div>
               </article>
             ))}
-          </div>
-
-          {/* View all (mobile) */}
-          <div className="mt-10 text-center sm:hidden">
-            <a
-              href="/products"
-              className="inline-flex items-center justify-center rounded-lg border border-gray-300 px-6 py-3 text-sm font-semibold text-gray-900 transition hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-900/10"
-            >
-              View All Products
-            </a>
           </div>
         </div>
       </section>

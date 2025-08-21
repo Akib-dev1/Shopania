@@ -7,7 +7,7 @@ const page = () => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const data = Object.fromEntries(formData.entries());
-    const res = await fetch("http://localhost:3000/product", {
+    const res = await fetch("https://shopania.vercel.app/product", {
       method: "POST",
       body: JSON.stringify(data),
       headers: {

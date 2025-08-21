@@ -2,10 +2,10 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
+export const dynamic = "force-dynamic";
+
 const page = async () => {
-  const res = await fetch("http://localhost:3000/product", {
-    cache: "force-cache",
-  });
+  const res = await fetch("https://shopania.vercel.app/product");
   const products = await res.json();
   return (
     <main className="bg-white text-gray-900">
