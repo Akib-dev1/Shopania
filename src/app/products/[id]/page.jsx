@@ -6,7 +6,8 @@ export default async function Page({ params }) {
     cache: "force-cache",
   });
   const products = await res.json();
-  const product = products.find((p) => p._id === params.id);
+  const { id } = await params;
+  const product = products.find((p) => p._id === id);
   return (
     <main className="bg-white text-gray-900">
       <div className="mx-auto min-h-screen lg:max-w-8/12 max-w-11/12 px-6 py-12">

@@ -25,7 +25,7 @@ const page = () => {
   };
   return (
     <main className="bg-white text-gray-900">
-      <div className="mx-auto lg:max-w-6/12 md:max-w-8/12 max-w-11/12 px-6 py-12 sm:py-16">
+      <div className="mx-auto min-h-screen lg:max-w-6/12 md:max-w-8/12 max-w-11/12 px-6 py-12 sm:py-16">
         <header className="mb-8 sm:mb-10">
           <h1 className="text-2xl font-bold sm:text-3xl">Add Product</h1>
           <p className="mt-2 text-sm text-gray-600 sm:text-base">

@@ -1,11 +1,41 @@
 "use client";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect } from "react";
+import { registerUser } from "../auth/registerUser";
+import Swal from "sweetalert2";
+import { useRouter } from "next/navigation";
+import { signIn, useSession } from "next-auth/react";
 
 const page = () => {
+  const { data: session } = useSession();
+  const router = useRouter();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const userData = Object.fromEntries(formData);
+    const result = await registerUser(userData);
+    if (result.insertedId) {
+      Swal.fire({
+        title: "Success!",
+        text: "Your account has been created.",
+        icon: "success",
+        confirmButtonText: "OK",
+      });
+      router.push("/login");
+      e.target.reset();
+    }
+  };
+  const handleGoogle = () => {
+    signIn("google");
+  };
+  useEffect(() => {
+    if (session?.user) {
+      router.push("/products");
+    }
+  }, [session?.user]);
   return (
     <main className="bg-white text-gray-900">
-      <div className="mx-auto max-w-md px-6 py-16">
+      <div className="mx-auto min-h-screen max-w-md px-6 py-16">
         <div className="text-center">
           <h1 className="text-2xl font-bold sm:text-3xl">
             Create your account
@@ -16,7 +46,10 @@ const page = () => {
         </div>
 
         <div className="mt-8 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-          <button className="btn w-full rounded-xl bg-white text-black border-[#e5e5e5]">
+          <button
+            onClick={handleGoogle}
+            className="btn w-full rounded-xl bg-white text-black border-[#e5e5e5]"
+          >
             <svg
               aria-label="Google logo"
               width="16"
@@ -57,9 +90,9 @@ const page = () => {
 
           <form
             method="post"
-            action="/register"
             className="space-y-6"
             noValidate
+            onSubmit={handleSubmit}
           >
             <div>
               <label
@@ -115,29 +148,9 @@ const page = () => {
                 className="mt-2 w-full rounded-xl border border-gray-300 px-4 py-3 text-sm shadow-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900/10"
               />
             </div>
-
-            <div>
-              <label
-                htmlFor="confirm"
-                className="block text-sm font-medium text-gray-800"
-              >
-                Confirm password
-              </label>
-              <input
-                id="confirm"
-                name="confirm"
-                type="password"
-                autoComplete="new-password"
-                required
-                minLength={6}
-                placeholder="••••••••"
-                className="mt-2 w-full rounded-xl border border-gray-300 px-4 py-3 text-sm shadow-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900/10"
-              />
-            </div>
-
             <button
               type="submit"
-              className="inline-flex w-full items-center justify-center rounded-xl bg-gray-900 px-6 py-3 text-sm font-semibold text-white transition hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-900/30"
+              className="inline-flex w-full items-center justify-center rounded-xl bg-gray-900 px-6 py-3 text-sm font-semibold text-white transition hover:bg-gray-800 cursor-pointer focus:outline-none focus:ring-2 focus:ring-gray-900/30"
             >
               Create account
             </button>

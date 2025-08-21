@@ -1,7 +1,10 @@
+"use client";
+import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import React from "react";
 
 const Navbar = () => {
+  const { data: session, status } = useSession();
   const menu = () => (
     <>
       <li>
@@ -22,7 +25,7 @@ const Navbar = () => {
       </li>
       <li>
         <Link
-          href="/add-product"
+          href="/dashboard/add-product"
           className="hover:text-success transition-colors duration-300"
         >
           Add Products
@@ -71,12 +74,28 @@ const Navbar = () => {
         </ul>
       </div>
       <div className="navbar-end">
-        <Link
-          href="/login"
-          className="btn btn-success rounded-lg text-lg hover:bg-inherit text-white px-6 hover:text-black transition-colors duration-250"
-        >
-          Login
-        </Link>
+        {!(status == "authenticated") ? (
+          <Link
+            href="/login"
+            className="btn btn-success rounded-lg text-lg hover:bg-inherit text-white px-6 hover:text-black transition-colors duration-250"
+          >
+            Login
+          </Link>
+        ) : (
+          <details className="dropdown">
+            <summary className="btn m-1 rounded-lg btn-success text-white">
+              Profile
+            </summary>
+            <ul className="menu dropdown-content bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
+              <li>
+                <a>{session?.user?.name}</a>
+              </li>
+              <li>
+                <a onClick={() => signOut()}>Logout</a>
+              </li>
+            </ul>
+          </details>
+        )}
       </div>
     </div>
   );

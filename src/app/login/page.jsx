@@ -1,24 +1,45 @@
 "use client";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { signIn, useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 const page = () => {
   const [show, setShow] = useState(false);
-
-  const handleSubmit = (e) => {
+  const { data: session } = useSession();
+  const router = useRouter();
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    const data = Object.fromEntries(formData.entries());
-    // Demo only: replace with your auth call later
-    if (typeof window !== "undefined") {
-      console.log("Login payload:", data);
-      alert("Signed in (demo). Check console for payload.");
+    const { email, password } = Object.fromEntries(formData.entries());
+    try {
+      const res = await signIn("credentials", {
+        email,
+        password,
+        callbackUrl: "/products",
+        redirect: false,
+      });
+      if (res.ok) {
+        router.push("/products");
+        e.target.reset();
+      } else {
+        alert("Login failed. Please check your credentials.");
+      }
+    } catch (error) {
+      alert("Login failed. Please check your credentials.");
     }
-    e.currentTarget.reset();
   };
+  const handleGoogle = () => {
+    signIn("google");
+  };
+  useEffect(() => {
+    if (session?.user) {
+      router.push("/products");
+    }
+  }, [session?.user]);
   return (
     <main className="bg-white text-gray-900">
-      <div className="mx-auto max-w-md px-6 py-16">
+      <div className="mx-auto min-h-screen max-w-md px-6 py-16">
         <header className="text-center">
           <h1 className="text-2xl font-bold sm:text-3xl">Welcome back</h1>
           <p className="mt-2 text-sm text-gray-600">
@@ -78,32 +99,17 @@ const page = () => {
               </div>
             </div>
 
-            {/* Options */}
-            <div className="flex items-center justify-between">
-              <label className="inline-flex items-center gap-2 text-sm text-gray-700">
-                <input
-                  type="checkbox"
-                  name="remember"
-                  className="h-4 w-4 rounded border-gray-300 text-gray-900 focus:ring-gray-900/20"
-                />
-                Remember me
-              </label>
-              <a
-                href="/forgot-password"
-                className="text-sm font-medium text-gray-900 hover:underline"
-              >
-                Forgot password?
-              </a>
-            </div>
-
             {/* Submit */}
             <button
               type="submit"
-              className="inline-flex w-full items-center justify-center rounded-xl bg-gray-900 px-6 py-3 text-sm font-semibold text-white transition hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-900/30"
+              className="inline-flex w-full items-center justify-center rounded-xl bg-gray-900 px-6 py-3 text-sm font-semibold text-white transition hover:bg-gray-800 cursor-pointer focus:outline-none focus:ring-2 focus:ring-gray-900/30"
             >
               Sign in
             </button>
-            <button className="btn w-full rounded-xl bg-white text-black border-[#e5e5e5]">
+            <button
+              onClick={handleGoogle}
+              className="btn w-full rounded-xl bg-white text-black border-[#e5e5e5]"
+            >
               <svg
                 aria-label="Google logo"
                 width="16"
