@@ -1,79 +1,16 @@
 import Image from "next/image";
 import Link from "next/link";
 
-export default function Home() {
-  const products = [
-    {
-      id: 1,
-      name: "AirLite Smart Lamp",
-      slug: "airlite-smart-lamp",
-      category: "Home",
-      price: "$29.99",
-      rating: 4.7,
-      reviews: 188,
-      description:
-        "A compact, modern lamp with multiple brightness modes and a minimal footprint.",
-    },
-    {
-      id: 2,
-      name: "FlexiFold Storage Box",
-      slug: "flexifold-storage-box",
-      category: "Organization",
-      price: "$14.50",
-      rating: 4.5,
-      reviews: 96,
-      description:
-        "Durable foldable box to keep your desk or wardrobe tidy without bulk.",
-    },
-    {
-      id: 3,
-      name: "HydroTrack Bottle",
-      slug: "hydrotrack-bottle",
-      category: "Lifestyle",
-      price: "$19.00",
-      rating: 4.6,
-      reviews: 245,
-      description:
-        "Lightweight bottle with time markers to help you stay on top of hydration.",
-    },
-    {
-      id: 4,
-      name: "GripCharge Cable (2m)",
-      slug: "gripcharge-cable-2m",
-      category: "Tech",
-      price: "$9.99",
-      rating: 4.4,
-      reviews: 412,
-      description:
-        "Tangle-resistant charging cable with reinforced joints for daily reliability.",
-    },
-    {
-      id: 5,
-      name: "UrbanCarry Tote",
-      slug: "urbancarry-tote",
-      category: "Bags",
-      price: "$24.00",
-      rating: 4.5,
-      reviews: 133,
-      description:
-        "Everyday tote with inner pockets—light, sturdy, and easy to clean.",
-    },
-    {
-      id: 6,
-      name: "ZenPad Desk Mat",
-      slug: "zenpad-desk-mat",
-      category: "Workspace",
-      price: "$17.50",
-      rating: 4.8,
-      reviews: 321,
-      description:
-        "Soft-touch mat that keeps your desk organized and your mouse glide smooth.",
-    },
-  ];
+export default async function Home() {
+  const res = await fetch("http://localhost:3000/product", {
+    cache: "force-cache",
+  });
+  const product = await res.json();
+  const products = product.slice(0, 6);
   return (
     <div>
       <section className="bg-white text-gray-900">
-        <div className="mx-auto flex max-w-6xl flex-col items-center px-6 py-16 text-center sm:py-24">
+        <div className="mx-auto flex lg:max-w-9/12 md:max-w-10/12 flex-col items-center px-6 py-16 text-center sm:py-24">
           {/* Eyebrow */}
           <div className="mb-4 text-xs font-medium uppercase tracking-widest text-gray-500">
             New arrivals every week
@@ -98,12 +35,12 @@ export default function Home() {
             >
               Shop Now
             </Link>
-            <a
-              href="#categories"
+            <Link
+              href="/products"
               className="inline-flex items-center justify-center rounded-xl border border-gray-300 px-6 py-3 text-sm font-semibold text-gray-900 transition hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-900/10"
             >
               Browse Categories
-            </a>
+            </Link>
           </div>
 
           {/* Text highlights */}
@@ -132,7 +69,7 @@ export default function Home() {
         </div>
       </section>
       <section className="bg-white text-gray-900">
-        <div className="mx-auto max-w-6xl px-6 py-16">
+        <div className="mx-auto lg:max-w-9/12 md:max-w-10/12  px-6 py-16">
           {/* Section header */}
           <div className="mb-8 text-center sm:mb-10 sm:text-left">
             <h2 className="text-2xl font-bold sm:text-3xl">
@@ -147,44 +84,46 @@ export default function Home() {
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3">
             {products.map((p) => (
               <article
-                key={p.id}
+                key={p._id}
                 className="card rounded-xl border border-gray-200 bg-white shadow-sm transition hover:shadow-md"
               >
                 <figure className="relative overflow-hidden rounded-t-xl">
                   <Image
-                    src={p.image}
+                    src={p.imageUrl}
                     alt={p.name}
+                    width={400}
+                    height={300}
                     loading="lazy"
                     className="h-48 w-full object-cover sm:h-52"
                   />
                 </figure>
-                <div className="card-body p-5">
+                <div className="card-body flex-col justify-between p-5">
                   <div className="text-xs font-medium uppercase tracking-widest text-gray-500">
                     {p.category}
                   </div>
                   <h3 className="mt-1 text-lg font-semibold text-gray-900">
-                    <a href={`/product/${p.slug}`} className="focus:underline">
+                    <a href={`/products/${p._id}`} className="hover:underline">
                       {p.name}
                     </a>
                   </h3>
-                  <p className="mt-2 text-sm leading-6 text-gray-600">
+                  <p
+                    className="mt-2 text-sm text-gray-600 overflow-hidden max-h-10"
+                    title={p.description}
+                  >
                     {p.description}
                   </p>
 
                   <div className="mt-4 flex items-baseline justify-between">
-                    <span className="text-xl font-bold">{p.price}</span>
-                    <span className="text-xs text-gray-500">
-                      {p.rating}★ ({p.reviews})
-                    </span>
+                    <span className="text-xl font-bold">Price: ${p.price}</span>
                   </div>
 
                   <div className="mt-5">
-                    <a
-                      href={`/product/${p.slug}`}
+                    <Link
+                      href={`/products/${p._id}`}
                       className="btn w-full rounded-lg bg-gray-900 text-white hover:bg-gray-800"
                     >
                       View Product
-                    </a>
+                    </Link>
                   </div>
                 </div>
               </article>

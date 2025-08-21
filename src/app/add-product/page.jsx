@@ -1,20 +1,31 @@
 "use client";
 import React from "react";
+import Swal from "sweetalert2";
 
 const page = () => {
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const data = Object.fromEntries(formData.entries());
-    if (typeof window !== "undefined") {
-      console.log("Submitted product:", data);
-      alert("Product submitted (demo). Check console for payload.");
+    const res = await fetch("http://localhost:3000/product", {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const postedResponse = await res.json();
+    if (postedResponse.insertedId) {
+      Swal.fire({
+        title: "Product Added!",
+        icon: "success",
+      });
+      e.target.reset();
     }
-    e.currentTarget.reset();
   };
   return (
     <main className="bg-white text-gray-900">
-      <div className="mx-auto max-w-3xl px-6 py-12 sm:py-16">
+      <div className="mx-auto lg:max-w-6/12 md:max-w-8/12 max-w-11/12 px-6 py-12 sm:py-16">
         <header className="mb-8 sm:mb-10">
           <h1 className="text-2xl font-bold sm:text-3xl">Add Product</h1>
           <p className="mt-2 text-sm text-gray-600 sm:text-base">
@@ -111,7 +122,7 @@ const page = () => {
                 name="category"
                 required
                 defaultValue=""
-                className="mt-2 w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-900/10"
+                className="mt-2 w-full cursor-pointer rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-900/10"
               >
                 <option value="" disabled>
                   Select a category
@@ -142,7 +153,7 @@ const page = () => {
             </a>
             <button
               type="submit"
-              className="inline-flex items-center justify-center rounded-xl bg-gray-900 px-6 py-3 text-sm font-semibold text-white transition hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-900/30"
+              className="inline-flex cursor-pointer items-center justify-center rounded-xl bg-gray-900 px-6 py-3 text-sm font-semibold text-white transition hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-900/30"
             >
               Save Product
             </button>
