@@ -42,3 +42,4 @@ The project serves as a starter template or learning resource for developers who
 ```bash
 git clone <your-repo-url> shopania
 cd shopania
+npm i
