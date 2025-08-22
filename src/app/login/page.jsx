@@ -6,37 +6,27 @@ import { useRouter } from "next/navigation";
 
 const page = () => {
   const [show, setShow] = useState(false);
-  const { data: session } = useSession();
   const router = useRouter();
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const { email, password } = Object.fromEntries(formData.entries());
-    try {
-      const res = await signIn("credentials", {
-        email,
-        password,
-        callbackUrl: "/products",
-        redirect: false,
-      });
-      if (res.ok) {
-        router.push("/products");
-        e.target.reset();
-      } else {
-        alert("Login failed. Please check your credentials.");
-      }
-    } catch (error) {
+    const res = await signIn("credentials", {
+      email,
+      password,
+      redirect: false,
+    });
+    if (res && !res.error) {
+      router.replace("/products"); // or your protected route
+      router.refresh(); // <-- important
+      e.currentTarget.reset();
+    } else {
       alert("Login failed. Please check your credentials.");
     }
   };
   const handleGoogle = () => {
-    signIn("google");
+    signIn("google", { callbackUrl: "/products" });
   };
-  useEffect(() => {
-    if (session?.user) {
-      router.push("/products");
-    }
-  }, [session?.user]);
   return (
     <main className="bg-white text-gray-900">
       <div className="mx-auto min-h-screen max-w-md px-6 py-16">
