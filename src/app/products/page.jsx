@@ -5,7 +5,9 @@ import React from "react";
 export const dynamic = "force-dynamic";
 
 const page = async () => {
-  const res = await fetch("https://shopania.vercel.app/product");
+  const res = await fetch("https://shopania.vercel.app/product", {
+    cache: "force-cache",
+  });
   const products = await res.json();
   return (
     <main className="bg-white text-gray-900">
